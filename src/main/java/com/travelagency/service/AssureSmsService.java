@@ -34,12 +34,12 @@ public class AssureSmsService {
 
         if (smsEnabled) {
             // === Twilio (décommenter et configurer) ===
-            // com.twilio.Twilio.init(accountSid, authToken);
-            // com.twilio.rest.api.v2010.account.Message.creator(
-            //     new com.twilio.type.PhoneNumber(tel),
-            //     new com.twilio.type.PhoneNumber(fromNumber),
-            //     msg
-            // ).create();
+/*             com.twilio.Twilio.init(accountSid, authToken);
+             com.twilio.rest.api.v2010.account.Message.creator(
+                 new com.twilio.type.PhoneNumber(tel),
+                 new com.twilio.type.PhoneNumber(fromNumber),
+                 msg
+             ).create();*/
             log.info("SMS Twilio → {} : {}", tel, msg);
         } else {
             // Mode simulation : log uniquement

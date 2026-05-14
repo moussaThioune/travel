@@ -35,7 +35,8 @@ public class AssureController {
 
     @PutMapping("/{id}")
     @PreAuthorize("hasRole('ADMIN')")
-    public AssureDTOs.Response update(@PathVariable Long id, @Valid @RequestBody AssureDTOs.Request req) {
+    public AssureDTOs.Response update(@PathVariable Long id,
+                                      @Valid @RequestBody AssureDTOs.Request req) {
         return service.update(id, req);
     }
 

@@ -34,4 +34,6 @@ public class AuthController {
     public ResponseEntity<AuthDTOs.RegisterResponse> resendVerification(@RequestParam String email) {
         return ResponseEntity.ok(authService.resendVerification(email));
     }
+
+
 }
