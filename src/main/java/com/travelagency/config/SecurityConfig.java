@@ -31,9 +31,6 @@ import java.util.List;
 @RequiredArgsConstructor
 public class SecurityConfig {
 
-    // JwtFilter injecte UserDetailsService (UserDetailsServiceImpl)
-    // SecurityConfig injecte JwtFilter + UserDetailsService
-    // Pas de cycle : UserDetailsServiceImpl est un @Component indépendant
     private final JwtFilter jwtFilter;
     private final UserDetailsService userDetailsService;
 
@@ -66,7 +63,7 @@ public class SecurityConfig {
         config.setAllowedOrigins(List.of(
                 "http://localhost:4200",
                 "http://localhost:4201",
-                "https://travel-production-c3e3.up.railway.app",
+                "http://travel-production-c3e3.up.railway.app",
                 "https://votre-frontend.up.railway.app"
         ));
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
@@ -108,4 +105,6 @@ public class SecurityConfig {
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
+
 }
