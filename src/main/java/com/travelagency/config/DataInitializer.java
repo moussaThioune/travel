@@ -1,5 +1,4 @@
 package com.travelagency.config;
-
 import com.travelagency.entity.*;
 import com.travelagency.repository.*;
 import lombok.RequiredArgsConstructor;
@@ -8,10 +7,11 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
-
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+
+
 
 @Component
 @RequiredArgsConstructor
@@ -31,7 +31,6 @@ public class DataInitializer implements CommandLineRunner {
 
         log.info("Initialisation des données de démo...");
 
-        // ===== USERS =====
         User admin = User.builder()
                 .firstName("Admin").lastName("Travel")
                 .email("admin@travelagency.com")
