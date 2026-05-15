@@ -63,8 +63,7 @@ public class SecurityConfig {
         config.setAllowedOrigins(List.of(
                 "http://localhost:4200",
                 "http://localhost:4201",
-                "http://travel-production-c3e3.up.railway.app",
-                "https://votre-frontend.up.railway.app"
+                "https://travelfront-production.up.railway.app"
         ));
         config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
         config.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Accept"));
