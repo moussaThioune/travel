@@ -66,10 +66,10 @@ public class DataInitializer implements CommandLineRunner {
                 .prixParPersonne(new BigDecimal("2750000"))
                 .nombrePlacesTotal(50).nombrePlacesDisponibles(20)
                 .imageUrl("https://images.unsplash.com/photo-1591604129939-f1efa4d9f7fa?w=1200")
-                .categorie("OMRA").statut(Voyage.StatutVoyage.ACTIF).build(),
+                .categorie("Humra").statut(Voyage.StatutVoyage.ACTIF).build(),
 
             Voyage.builder()
-                .titre("Omra Ramadan 2026 — Package VIP")
+                .titre("Humra Ramadan 2026 — Package VIP")
                 .description("Package VIP pour les 15 derniers jours du Ramadan. Hébergement 5 étoiles à proximité de la Kaaba, transport privatisé, guide personnel et services premium.")
                 .destination("La Mecque / Médine").paysDestination("Arabie Saoudite")
                 .dateDepart(LocalDate.of(2026, 3, 5))
@@ -77,7 +77,7 @@ public class DataInitializer implements CommandLineRunner {
                 .prixParPersonne(new BigDecimal("3250000"))
                 .nombrePlacesTotal(20).nombrePlacesDisponibles(8)
                 .imageUrl("https://images.unsplash.com/photo-1591604129939-f1efa4d9f7fa?w=1200")
-                .categorie("OMRA").statut(Voyage.StatutVoyage.ACTIF).build(),
+                .categorie("Humra").statut(Voyage.StatutVoyage.ACTIF).build(),
 
             // HADJ
             Voyage.builder()
@@ -89,7 +89,7 @@ public class DataInitializer implements CommandLineRunner {
                 .prixParPersonne(new BigDecimal("6000000"))
                 .nombrePlacesTotal(40).nombrePlacesDisponibles(15)
                 .imageUrl("https://images.unsplash.com/photo-1537621547307-9b9f3b4b7e5f?w=1200")
-                .categorie("HADJ").statut(Voyage.StatutVoyage.ACTIF).build(),
+                .categorie("HADJJ").statut(Voyage.StatutVoyage.ACTIF).build(),
 
             Voyage.builder()
                 .titre("Hajj 2026 — Package Standard 21 Jours")
@@ -100,7 +100,7 @@ public class DataInitializer implements CommandLineRunner {
                 .prixParPersonne(new BigDecimal("5100000"))
                 .nombrePlacesTotal(60).nombrePlacesDisponibles(30)
                 .imageUrl("https://images.unsplash.com/photo-1537621547307-9b9f3b4b7e5f?w=1200")
-                .categorie("HADJ").statut(Voyage.StatutVoyage.ACTIF).build(),
+                .categorie("HADJJ").statut(Voyage.StatutVoyage.ACTIF).build(),
 
             // ZIARRA
             Voyage.builder()
