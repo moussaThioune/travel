@@ -90,6 +90,13 @@ public class VoyageService {
     }
 
     @Transactional
+    public VoyageDTOs.Response updateStatut(Long id, Voyage.StatutVoyage statut) {
+        Voyage voyage = findById(id);
+        voyage.setStatut(statut);
+        return toResponse(voyageRepository.save(voyage));
+    }
+
+    @Transactional
     public void delete(Long id) {
         voyageRepository.deleteById(id);
     }

@@ -1,6 +1,7 @@
 package com.travelagency.controller;
 
 import com.travelagency.dto.VoyageDTOs;
+import com.travelagency.entity.Voyage;
 import com.travelagency.service.VoyageService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +17,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/voyages")
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://localhost:4200")
 public class VoyageController {
 
     private final VoyageService voyageService;
@@ -56,6 +56,13 @@ public class VoyageController {
     public ResponseEntity<VoyageDTOs.Response> update(@PathVariable Long id,
                                                        @Valid @RequestBody VoyageDTOs.CreateRequest request) {
         return ResponseEntity.ok(voyageService.update(id, request));
+    }
+
+    @PatchMapping("/{id}/statut")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<VoyageDTOs.Response> updateStatut(@PathVariable Long id,
+                                                             @RequestParam Voyage.StatutVoyage statut) {
+        return ResponseEntity.ok(voyageService.updateStatut(id, statut));
     }
 
     @DeleteMapping("/{id}")
