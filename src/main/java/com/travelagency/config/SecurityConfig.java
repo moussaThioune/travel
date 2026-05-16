@@ -43,6 +43,8 @@ public class SecurityConfig {
                 .requestMatchers("/api/auth/**").permitAll()
                 .requestMatchers("/h2-console/**").permitAll()
                 .requestMatchers(HttpMethod.GET, "/api/voyages/**").permitAll()
+                .requestMatchers(HttpMethod.GET, "/api/avis/**").permitAll()
+                .requestMatchers(HttpMethod.POST, "/api/avis").permitAll()
                 .requestMatchers("/api/admin/**").hasRole("ADMIN")
                 .requestMatchers("/api/assures/**").hasRole("ADMIN")
                 .requestMatchers("/api/import/**").hasRole("ADMIN")

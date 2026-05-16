@@ -30,6 +30,7 @@ com/travelagency/dto/ReservationDTOs$Response$ResponseBuilder.class
 com/travelagency/dto/AuthDTOs$RegisterResponse$RegisterResponseBuilder.class
 com/travelagency/dto/AuthDTOs$RegisterResponse.class
 com/travelagency/entity/Paiement$PaiementBuilder.class
+com/travelagency/service/AvisService.class
 com/travelagency/dto/PaiementDTOs.class
 com/travelagency/repository/UserRepository.class
 com/travelagency/controller/AdminController.class
@@ -43,6 +44,7 @@ com/travelagency/dto/AssureDTOs$Response.class
 com/travelagency/dto/AssureDTOs$MoisStat.class
 com/travelagency/controller/AssureController.class
 com/travelagency/config/SecurityConfig.class
+com/travelagency/entity/Avis$AvisBuilder.class
 com/travelagency/dto/AssureDTOs$Request$RequestBuilder.class
 com/travelagency/security/JwtService.class
 com/travelagency/config/JwtFilter.class
@@ -65,6 +67,7 @@ com/travelagency/entity/Client.class
 com/travelagency/service/PaiementService.class
 com/travelagency/service/AuthService.class
 com/travelagency/dto/PaiementRequest$PaiementRequestBuilder.class
+com/travelagency/entity/Avis.class
 com/travelagency/dto/VoyageDTOs$VolSummary.class
 com/travelagency/entity/Hotel.class
 com/travelagency/entity/NotificationAssure$NotificationAssureBuilder.class
@@ -94,6 +97,7 @@ com/travelagency/dto/PaiementDTOs$Response.class
 com/travelagency/dto/VoyageCreateRequest.class
 com/travelagency/repository/ClientRepository.class
 com/travelagency/controller/ReservationController.class
+com/travelagency/controller/AvisController.class
 com/travelagency/dto/PaiementDTOs$Stats$StatsBuilder.class
 com/travelagency/entity/NotificationAssure$TypeNotif.class
 com/travelagency/entity/Paiement.class
@@ -102,6 +106,7 @@ com/travelagency/dto/VoyageDTOs$Response.class
 com/travelagency/repository/ReservationRepository.class
 com/travelagency/dto/VoyageDTOs$Response$ResponseBuilder.class
 com/travelagency/dto/ReservationDTOs$Request.class
+com/travelagency/repository/AvisRepository.class
 com/travelagency/dto/PaiementResponse$PaiementResponseBuilder.class
 com/travelagency/dto/PaiementDTOs$Request$RequestBuilder.class
 com/travelagency/entity/NotificationAssure.class

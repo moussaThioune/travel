@@ -4,6 +4,7 @@
 /Users/user/Desktop/travel-agency/backend/src/main/java/com/travelagency/repository/ClientRepository.java
 /Users/user/Desktop/travel-agency/backend/src/main/java/com/travelagency/controller/VoyageController.java
 /Users/user/Desktop/travel-agency/backend/src/main/java/com/travelagency/exception/GlobalExceptionHandler.java
+/Users/user/Desktop/travel-agency/backend/src/main/java/com/travelagency/controller/AvisController.java
 /Users/user/Desktop/travel-agency/backend/src/main/java/com/travelagency/dto/VolDTO.java
 /Users/user/Desktop/travel-agency/backend/src/main/java/com/travelagency/controller/AuthController.java
 /Users/user/Desktop/travel-agency/backend/src/main/java/com/travelagency/service/PaiementService.java
@@ -33,7 +34,9 @@
 /Users/user/Desktop/travel-agency/backend/src/main/java/com/travelagency/dto/VoyageDTOs.java
 /Users/user/Desktop/travel-agency/backend/src/main/java/com/travelagency/config/SecurityConfig.java
 /Users/user/Desktop/travel-agency/backend/src/main/java/com/travelagency/service/AssureEmailService.java
+/Users/user/Desktop/travel-agency/backend/src/main/java/com/travelagency/entity/Avis.java
 /Users/user/Desktop/travel-agency/backend/src/main/java/com/travelagency/service/EmailService.java
+/Users/user/Desktop/travel-agency/backend/src/main/java/com/travelagency/service/AvisService.java
 /Users/user/Desktop/travel-agency/backend/src/main/java/com/travelagency/controller/AssureController.java
 /Users/user/Desktop/travel-agency/backend/src/main/java/com/travelagency/dto/PaiementDTOs.java
 /Users/user/Desktop/travel-agency/backend/src/main/java/com/travelagency/repository/VoyageRepository.java
@@ -48,6 +51,7 @@
 /Users/user/Desktop/travel-agency/backend/src/main/java/com/travelagency/service/AuthService.java
 /Users/user/Desktop/travel-agency/backend/src/main/java/com/travelagency/dto/ReservationDTOs.java
 /Users/user/Desktop/travel-agency/backend/src/main/java/com/travelagency/dto/ReservationResponse.java
+/Users/user/Desktop/travel-agency/backend/src/main/java/com/travelagency/repository/AvisRepository.java
 /Users/user/Desktop/travel-agency/backend/src/main/java/com/travelagency/dto/VoyageCreateRequest.java
 /Users/user/Desktop/travel-agency/backend/src/main/java/com/travelagency/repository/NotificationAssureRepository.java
 /Users/user/Desktop/travel-agency/backend/src/main/java/com/travelagency/repository/PaiementRepository.java
