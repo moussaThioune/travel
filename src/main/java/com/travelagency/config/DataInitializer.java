@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -22,6 +23,7 @@ public class DataInitializer implements CommandLineRunner {
     private final ClientRepository clientRepository;
     private final VoyageRepository voyageRepository;
     private final AssureRepository assureRepository;
+    private final DemandeVolRepository demandeVolRepository;
     private final PasswordEncoder passwordEncoder;
 
     @Override
@@ -186,5 +188,72 @@ public class DataInitializer implements CommandLineRunner {
         );
         assureRepository.saveAll(assures);
         log.info("✅ {} assurés de démo créés", assures.size());
+
+        // ===== DEMANDES DE VOL DE TEST =====
+        // Vol 1 — Aller-retour, Dakar → Paris, statut EN_ATTENTE
+        DemandeVol vol1 = DemandeVol.builder()
+                .numeroDemande("VOL-DEMO-001")
+                .user(clientUser)
+                .origine("Dakar (DSS)")
+                .destination("Paris (CDG)")
+                .dateDepart(LocalDate.of(2026, 6, 15))
+                .dateRetour(LocalDate.of(2026, 6, 25))
+                .typeVoyage("aller-retour")
+                .nbAdultes(2).nbEnfants(1).nbBebes(0)
+                .classeVoyage("Économie")
+                .volsDirects(false)
+                .notesClient("Préférence pour vols le matin")
+                .statut(DemandeVol.Statut.EN_ATTENTE)
+                .createdAt(LocalDateTime.now().minusHours(3))
+                .updatedAt(LocalDateTime.now().minusHours(3))
+                .build();
+
+        // Vol 2 — Aller simple, Dakar → Casablanca, statut REPONSE_ENVOYEE (offre disponible → bouton Valider visible)
+        DemandeVol vol2 = DemandeVol.builder()
+                .numeroDemande("VOL-DEMO-002")
+                .user(clientUser)
+                .origine("Dakar (DSS)")
+                .destination("Casablanca (CMN)")
+                .dateDepart(LocalDate.of(2026, 7, 10))
+                .typeVoyage("aller-simple")
+                .nbAdultes(1).nbEnfants(0).nbBebes(0)
+                .classeVoyage("Affaires")
+                .volsDirects(true)
+                .statut(DemandeVol.Statut.REPONSE_ENVOYEE)
+                .compagnieAerienne("Royal Air Maroc")
+                .prixParPersonne(285000.0)
+                .prixTotal(285000.0)
+                .dureeVol("3h45")
+                .escales(null)
+                .notesAdmin("Vol direct AT-570, départ 08h30, arrivée 12h15. Bagage 23kg inclus.")
+                .createdAt(LocalDateTime.now().minusDays(1))
+                .updatedAt(LocalDateTime.now().minusHours(2))
+                .build();
+
+        // Vol 3 — Aller-retour, Dakar → Dubaï, statut VALIDEE (déjà accepté + validé → paiement)
+        DemandeVol vol3 = DemandeVol.builder()
+                .numeroDemande("VOL-DEMO-003")
+                .user(clientUser)
+                .origine("Dakar (DSS)")
+                .destination("Dubaï (DXB)")
+                .dateDepart(LocalDate.of(2026, 8, 1))
+                .dateRetour(LocalDate.of(2026, 8, 15))
+                .typeVoyage("aller-retour")
+                .nbAdultes(2).nbEnfants(0).nbBebes(0)
+                .classeVoyage("Économie Premium")
+                .volsDirects(false)
+                .statut(DemandeVol.Statut.VALIDEE)
+                .compagnieAerienne("Emirates")
+                .prixParPersonne(520000.0)
+                .prixTotal(1040000.0)
+                .dureeVol("8h30")
+                .escales("Dubai International — 1 escale")
+                .notesAdmin("Vol EK-702 via Abidjan. Bagages 30kg inclus. Contactez-nous pour le paiement.")
+                .createdAt(LocalDateTime.now().minusDays(3))
+                .updatedAt(LocalDateTime.now().minusDays(1))
+                .build();
+
+        demandeVolRepository.saveAll(List.of(vol1, vol2, vol3));
+        log.info("✅ 3 demandes de vol de test créées (EN_ATTENTE, REPONSE_ENVOYEE, VALIDEE)");
     }
 }
