@@ -1,32 +1,31 @@
 package com.travelagency.service;
 
 import com.travelagency.entity.Assure;
-import jakarta.mail.MessagingException;
-import jakarta.mail.internet.MimeMessage;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.http.*;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
-import java.io.UnsupportedEncodingException;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
+import java.util.Map;
 
 @Service
-@RequiredArgsConstructor
 @Slf4j
 public class AssureEmailService {
 
-    private final JavaMailSender mailSender;
+    private static final String BREVO_API = "https://api.brevo.com/v3/smtp/email";
+    private static final DateTimeFormatter DF = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
+    @Value("${app.brevo.api-key}") private String apiKey;
     @Value("${app.mail.from}") private String fromEmail;
     @Value("${app.mail.from-name}") private String fromName;
     @Value("${app.assurance.nom:Agence Assurance}") private String nomAgence;
     @Value("${app.assurance.tel:+221 78 143 44 44}") private String telAgence;
 
-    private static final DateTimeFormatter DF = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+    private final RestTemplate rest = new RestTemplate();
 
     @Async
     public void sendRappelEcheance(Assure a, String messagePersonnalise) {
@@ -37,21 +36,30 @@ public class AssureEmailService {
             String subject = jours <= 0
                 ? "🔴 URGENT : Votre assurance a expiré — " + a.getImmatricule()
                 : "⚠️ Rappel : Votre assurance expire dans " + jours + " jour(s) — " + a.getImmatricule();
-            sendHtml(a.getEmail(), subject, buildEmailHtml(a, jours, messagePersonnalise));
-            log.info("Email rappel envoyé à {}", a.getEmail());
+
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            headers.set("api-key", apiKey);
+
+            Map<String, Object> body = Map.of(
+                "sender",  Map.of("name", fromName, "email", fromEmail),
+                "to",      List.of(Map.of("email", a.getEmail(), "name", a.getNomComplet())),
+                "subject", subject,
+                "htmlContent", buildEmailHtml(a, jours, messagePersonnalise)
+            );
+
+            ResponseEntity<String> response = rest.postForEntity(
+                BREVO_API, new HttpEntity<>(body, headers), String.class);
+
+            if (response.getStatusCode().is2xxSuccessful()) {
+                log.info("Email rappel envoyé via Brevo à {}", a.getEmail());
+            } else {
+                log.error("Brevo erreur {} pour {}", response.getStatusCode(), a.getEmail());
+            }
         } catch (Exception e) {
             log.error("Erreur email rappel assure {}: {}", a.getId(), e.getMessage());
             throw new RuntimeException(e);
         }
-    }
-
-    private void sendHtml(String to, String subject, String html) throws MessagingException, UnsupportedEncodingException {
-        MimeMessage msg = mailSender.createMimeMessage();
-        MimeMessageHelper h = new MimeMessageHelper(msg, true, "UTF-8");
-        h.setFrom(fromEmail, fromName);
-        h.setTo(to); h.setSubject(subject);
-        h.setText(html, true);
-        mailSender.send(msg);
     }
 
     private String buildEmailHtml(Assure a, long jours, String msgPerso) {
@@ -72,7 +80,6 @@ public class AssureEmailService {
         .card{background:#f8f9ff;border-left:4px solid %s;border-radius:6px;padding:18px;margin:16px 0}
         .jours{font-size:42px;font-weight:900;color:%s;text-align:center;padding:16px 0}
         .footer{background:#f8f8f8;padding:20px;text-align:center;color:#999;font-size:12px}
-        .cta{display:inline-block;background:%s;color:white;padding:12px 28px;border-radius:25px;text-decoration:none;font-weight:700;margin:16px 0}
         </style></head><body><div class="c">
         <div class="h">
           <div class="badge">%s</div>
@@ -98,20 +105,16 @@ public class AssureEmailService {
         <div class="footer"><p>%s — Ce message est automatique, merci de ne pas y répondre.</p></div>
         </div></body></html>
         """.formatted(
-            couleur, couleur, couleur, couleur,
-            badgeTxt,
-            nomAgence,
-            a.getNomComplet(),
-            msgPersoBlock,
+            couleur, couleur, couleur,
+            badgeTxt, nomAgence,
+            a.getNomComplet(), msgPersoBlock,
             jours <= 0 ? "EXPIRÉ" : ("J-" + jours),
-            a.getMarque() != null ? a.getMarque() : "",
-            "",
+            a.getMarque() != null ? a.getMarque() : "", "",
             a.getImmatricule() != null ? a.getImmatricule() : "—",
             a.getNumeroPolicce() != null ? a.getNumeroPolicce() : "—",
             a.getEcheance() != null ? a.getEcheance().format(DF) : "—",
             a.getPuissanceFiscale() != null ? a.getPuissanceFiscale() : "—",
-            telAgence,
-            nomAgence
+            telAgence, nomAgence
         );
     }
 }
