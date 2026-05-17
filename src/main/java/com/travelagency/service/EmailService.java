@@ -118,7 +118,7 @@ public class EmailService {
         </style></head><body><div class="c">
         <div class="h"><h1>%s</h1></div>
         <div class="b">%s</div>
-        <div class="footer">✈️ Yatou Voyage - contact@voyageur.fr | +221 33 00 00 00</div>
+        <div class="footer">✈️ Yatou Voyage - yvasvoye@gmail.com | +221 78 143 44 44</div>
         </div></body></html>
         """.formatted(color, color, color, title, body);
     }

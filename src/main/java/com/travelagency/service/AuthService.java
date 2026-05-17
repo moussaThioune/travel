@@ -29,7 +29,7 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final EmailService emailService;
 
-    @Value("${app.frontend.url:http://localhost:4200}")
+    @Value("${app.frontend.url:https://travelfront-production.up.railway.app}")
     private String frontendUrl;
 
     @Transactional
