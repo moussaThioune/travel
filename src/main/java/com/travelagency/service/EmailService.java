@@ -10,6 +10,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
+import jakarta.annotation.PostConstruct;
 import java.time.format.DateTimeFormatter;
 import java.util.Map;
 
@@ -26,6 +27,15 @@ public class EmailService {
     @Value("${app.mail.from-name}") private String fromName;
 
     private final RestTemplate rest = new RestTemplate();
+
+    @PostConstruct
+    public void checkConfig() {
+        if (apiKey == null || apiKey.isBlank()) {
+            log.error("=== EMAIL NON CONFIGURÉ === BREVO_API_KEY est vide. Les emails ne seront PAS envoyés. Ajouter BREVO_API_KEY dans les variables Railway.");
+        } else {
+            log.info("=== EMAIL OK === Brevo configuré. Expéditeur: {}", fromEmail);
+        }
+    }
 
     @Async
     public void sendEmailVerification(User user, String verificationLink) {
