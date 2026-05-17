@@ -46,6 +46,7 @@ public class Voyage {
     @Column(nullable = false)
     private int nombrePlacesDisponibles;
 
+    @Column(columnDefinition = "MEDIUMTEXT")
     private String imageUrl;
     private String categorie; // COLONIE, ZIARRA, OMRA, HADJ, AUTRE
 
