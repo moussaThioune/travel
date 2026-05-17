@@ -22,7 +22,7 @@ public class EmailService {
     private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     private static final DateTimeFormatter DT_FORMAT  = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
-    @Value("${app.brevo.api-key}") private String apiKey;
+    @Value("${app.brevo.api-key:}") private String apiKey;
     @Value("${app.mail.from}") private String fromEmail;
     @Value("${app.mail.from-name}") private String fromName;
 
