@@ -124,6 +124,19 @@ public class DemandeVolService {
     }
 
     @Transactional
+    public DemandeVolDTOs.Response payerVol(Long id, DemandeVolDTOs.PaiementVolRequest req) {
+        DemandeVol d = repo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Demande introuvable"));
+        if (d.getStatut() != DemandeVol.Statut.VALIDEE) {
+            throw new IllegalStateException("La demande doit être validée avant de procéder au paiement");
+        }
+        d.setStatut(DemandeVol.Statut.PAYE);
+        d = repo.save(d);
+        emailService.sendPaiementVolClient(d, req.getModePaiement().name(), req.getPhoneNumber());
+        return DemandeVolDTOs.Response.from(d);
+    }
+
+    @Transactional
     public DemandeVolDTOs.Response marquerPaye(Long id) {
         DemandeVol d = repo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Demande introuvable"));

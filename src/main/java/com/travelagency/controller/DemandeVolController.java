@@ -44,6 +44,14 @@ public class DemandeVolController {
         return ResponseEntity.ok(service.rejeter(id));
     }
 
+    /** Client: pay for validated request */
+    @PostMapping("/{id}/paiement")
+    public ResponseEntity<DemandeVolDTOs.Response> payer(
+            @PathVariable Long id,
+            @Valid @RequestBody DemandeVolDTOs.PaiementVolRequest req) {
+        return ResponseEntity.ok(service.payerVol(id, req));
+    }
+
     // ===== ADMIN =====
 
     /** Get all requests */

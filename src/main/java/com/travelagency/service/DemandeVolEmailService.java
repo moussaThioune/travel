@@ -162,7 +162,44 @@ public class DemandeVolEmailService {
             "🎉 Vol confirmé ! Procédez au paiement — #" + d.getNumeroDemande(), body);
     }
 
-    // 6. Ticket issued → email to client
+    // 6. Client pays → confirmation email to client
+    @Async
+    public void sendPaiementVolClient(DemandeVol d, String mode, String phone) {
+        String phoneInfo = (phone != null && !phone.isBlank())
+            ? "<div style='padding:4px 0'><span style='color:#777'>Numéro : </span><strong>" + phone + "</strong></div>"
+            : "";
+        String body = """
+        <p>Bonjour <strong>%s</strong>,</p>
+        <p>Nous avons bien reçu votre paiement pour la demande de vol <strong>#%s</strong>. Notre équipe va maintenant procéder à l'émission de votre billet d'avion.</p>
+        <div style="background:#f0f9f0;border:2px solid #1a6b6b;border-radius:12px;padding:24px;margin:20px 0;text-align:center">
+          <div style="font-size:32px;font-weight:900;color:#1a6b6b;margin-bottom:8px">%s FCFA</div>
+          <div style="color:#666;font-size:14px">%s → %s</div>
+          <div style="font-size:16px;font-weight:700;color:#333;margin-top:10px">%s</div>
+        </div>
+        <div style="background:#f8f9fa;border-radius:10px;padding:16px;margin:16px 0;font-size:14px">
+          <div style="padding:4px 0"><span style="color:#777">Mode de paiement : </span><strong>%s</strong></div>
+          %s
+        </div>
+        <div style="background:#e8f5e9;border-left:4px solid #1a6b6b;border-radius:6px;padding:16px;margin:20px 0">
+        ⏳ <strong>Billet en cours d'émission.</strong> Vous recevrez votre numéro de billet par email dès qu'il sera disponible.
+        </div>
+        <p>Vous pouvez suivre l'état de votre réservation dans <a href="%s/mes-demandes-vols" style="color:#1a6b6b;font-weight:700">Mon espace client</a>.</p>
+        <p style="color:#888;font-size:13px">Merci de votre confiance. 🙏<br><strong>L'équipe YVAS</strong></p>
+        """.formatted(
+            d.getUser().getFirstName(),
+            d.getNumeroDemande(),
+            formatPrice(d.getPrixTotal()),
+            d.getOrigine(), d.getDestination(),
+            d.getCompagnieAerienne(),
+            mode.replace("_", " "),
+            phoneInfo,
+            frontendUrl
+        );
+        send(d.getUser().getEmail(), d.getUser().getFirstName() + " " + d.getUser().getLastName(),
+            "💳 Paiement reçu — Demande #" + d.getNumeroDemande() + " en cours de traitement", body);
+    }
+
+    // 7. Ticket issued → email to client
     @Async
     public void sendBilletClient(DemandeVol d) {
         String body = """

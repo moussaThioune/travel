@@ -1,6 +1,7 @@
 package com.travelagency.dto;
 
 import com.travelagency.entity.DemandeVol;
+import com.travelagency.entity.Paiement;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -41,6 +42,14 @@ public class DemandeVolDTOs {
     public static class BilletRequest {
         @NotBlank private String numeroBillet;
         private String notesAdmin;
+    }
+
+    @Data
+    public static class PaiementVolRequest {
+        @NotNull private Paiement.ModePaiement modePaiement;
+        private String phoneNumber;
+        private String referenceTransaction;
+        private String notes;
     }
 
     @Data

@@ -59,6 +59,7 @@ com/travelagency/security/JwtService.class
 com/travelagency/config/JwtFilter.class
 com/travelagency/dto/LoginRequest$LoginRequestBuilder.class
 com/travelagency/dto/ReservationResponse.class
+com/travelagency/dto/DemandeVolDTOs$PaiementVolRequest.class
 com/travelagency/entity/Vol$VolBuilder.class
 com/travelagency/dto/ReservationDTOs$ClientSummary.class
 com/travelagency/dto/VoyageCreateRequest$VoyageCreateRequestBuilder.class
@@ -83,7 +84,9 @@ com/travelagency/entity/Hotel.class
 com/travelagency/entity/NotificationAssure$NotificationAssureBuilder.class
 com/travelagency/entity/Reservation$ReservationBuilder.class
 com/travelagency/entity/DemandeVol.class
+com/travelagency/controller/AuthController$ProfileResponse.class
 com/travelagency/dto/AssureDTOs$NotifResponse$NotifResponseBuilder.class
+com/travelagency/controller/AuthController$UpdateProfileRequest.class
 com/travelagency/entity/DemandeVol$Statut.class
 com/travelagency/dto/VolDTO.class
 com/travelagency/dto/AuthDTOs.class
@@ -123,6 +126,7 @@ com/travelagency/dto/PaiementResponse$PaiementResponseBuilder.class
 com/travelagency/dto/PaiementDTOs$Request$RequestBuilder.class
 com/travelagency/entity/NotificationAssure.class
 com/travelagency/service/PaiementService$1.class
+com/travelagency/controller/AuthController$ChangePasswordRequest.class
 com/travelagency/dto/VoyageResponse$VoyageResponseBuilder.class
 com/travelagency/service/VoyageService.class
 com/travelagency/dto/VoyageDTOs$HotelSummary$HotelSummaryBuilder.class
