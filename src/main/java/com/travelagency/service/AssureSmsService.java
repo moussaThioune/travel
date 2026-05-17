@@ -1,6 +1,10 @@
 package com.travelagency.service;
 
 import com.travelagency.entity.Assure;
+import com.twilio.Twilio;
+import com.twilio.rest.api.v2010.account.Message;
+import com.twilio.type.PhoneNumber;
+import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
@@ -12,37 +16,57 @@ import java.time.format.DateTimeFormatter;
 @Slf4j
 public class AssureSmsService {
 
-    @Value("${app.sms.enabled:false}") private boolean smsEnabled;
+    @Value("${app.sms.enabled:false}")       private boolean smsEnabled;
+    @Value("${app.sms.twilio.account-sid:}") private String accountSid;
+    @Value("${app.sms.twilio.auth-token:}")  private String authToken;
+    @Value("${app.sms.twilio.from:}")        private String fromNumber;
     @Value("${app.assurance.nom:Agence Assurance}") private String nomAgence;
     @Value("${app.assurance.tel:+221 78 143 44 44}") private String telAgence;
 
     private static final DateTimeFormatter DF = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
+    @PostConstruct
+    public void init() {
+        if (smsEnabled) {
+            if (accountSid == null || accountSid.isBlank() || authToken == null || authToken.isBlank()) {
+                log.error("=== SMS DÉSACTIVÉ === TWILIO_ACCOUNT_SID ou TWILIO_AUTH_TOKEN manquant. Ajouter ces variables sur Railway.");
+                smsEnabled = false;
+            } else {
+                Twilio.init(accountSid, authToken);
+                log.info("=== SMS OK === Twilio initialisé. Numéro expéditeur: {}", fromNumber);
+            }
+        } else {
+            log.info("=== SMS SIMULATION === app.sms.enabled=false, les SMS sont loggés uniquement.");
+        }
+    }
+
     @Async
     public void sendRappel(Assure a, String messagePerso) {
         String tel = normaliserTel(a.getTelephone());
         if (tel == null) {
-            log.warn("SMS: numéro invalide pour assuré {}", a.getId());
+            log.warn("SMS: numéro invalide pour assuré {} ({})", a.getId(), a.getNomComplet());
             return;
         }
+
         long jours = a.getEcheance() != null
             ? java.time.temporal.ChronoUnit.DAYS.between(java.time.LocalDate.now(), a.getEcheance()) : 0;
 
-        String msg = messagePerso != null && !messagePerso.isBlank()
+        String msg = (messagePerso != null && !messagePerso.isBlank())
             ? messagePerso
             : buildSmsText(a, jours);
 
         if (smsEnabled) {
-            // === Twilio (décommenter et configurer) ===
-/*             com.twilio.Twilio.init(accountSid, authToken);
-             com.twilio.rest.api.v2010.account.Message.creator(
-                 new com.twilio.type.PhoneNumber(tel),
-                 new com.twilio.type.PhoneNumber(fromNumber),
-                 msg
-             ).create();*/
-            log.info("SMS Twilio → {} : {}", tel, msg);
+            try {
+                Message message = Message.creator(
+                    new PhoneNumber(tel),
+                    new PhoneNumber(fromNumber),
+                    msg
+                ).create();
+                log.info("SMS Twilio envoyé à {} — SID: {}", tel, message.getSid());
+            } catch (Exception e) {
+                log.error("SMS Twilio ECHEC pour {} — {}: {}", tel, e.getClass().getSimpleName(), e.getMessage());
+            }
         } else {
-            // Mode simulation : log uniquement
             log.info("📱 [SMS SIMULATION] → {} :\n{}", tel, msg);
         }
     }
