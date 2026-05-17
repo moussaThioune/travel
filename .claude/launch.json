@@ -1,0 +1,11 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "angular-frontend",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": ["--prefix", "/Users/user/Desktop/travel-agency/frontend", "ng", "serve", "--port", "4200"],
+      "port": 4200
+    }
+  ]
+}

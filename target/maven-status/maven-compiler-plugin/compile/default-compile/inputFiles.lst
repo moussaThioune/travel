@@ -1,12 +1,15 @@
 /Users/user/Desktop/travel-agency/backend/src/main/java/com/travelagency/entity/NotificationAssure.java
 /Users/user/Desktop/travel-agency/backend/src/main/java/com/travelagency/service/AssureSmsService.java
+/Users/user/Desktop/travel-agency/backend/src/main/java/com/travelagency/service/DemandeVolService.java
 /Users/user/Desktop/travel-agency/backend/src/main/java/com/travelagency/config/UserDetailsServiceImpl.java
 /Users/user/Desktop/travel-agency/backend/src/main/java/com/travelagency/repository/ClientRepository.java
 /Users/user/Desktop/travel-agency/backend/src/main/java/com/travelagency/controller/VoyageController.java
 /Users/user/Desktop/travel-agency/backend/src/main/java/com/travelagency/exception/GlobalExceptionHandler.java
+/Users/user/Desktop/travel-agency/backend/src/main/java/com/travelagency/controller/SmsController.java
 /Users/user/Desktop/travel-agency/backend/src/main/java/com/travelagency/controller/AvisController.java
 /Users/user/Desktop/travel-agency/backend/src/main/java/com/travelagency/dto/VolDTO.java
 /Users/user/Desktop/travel-agency/backend/src/main/java/com/travelagency/controller/AuthController.java
+/Users/user/Desktop/travel-agency/backend/src/main/java/com/travelagency/entity/DemandeVol.java
 /Users/user/Desktop/travel-agency/backend/src/main/java/com/travelagency/service/PaiementService.java
 /Users/user/Desktop/travel-agency/backend/src/main/java/com/travelagency/entity/Hotel.java
 /Users/user/Desktop/travel-agency/backend/src/main/java/com/travelagency/TravelAgencyApplication.java
@@ -14,6 +17,7 @@
 /Users/user/Desktop/travel-agency/backend/src/main/java/com/travelagency/controller/ImportController.java
 /Users/user/Desktop/travel-agency/backend/src/main/java/com/travelagency/controller/ReservationController.java
 /Users/user/Desktop/travel-agency/backend/src/main/java/com/travelagency/entity/User.java
+/Users/user/Desktop/travel-agency/backend/src/main/java/com/travelagency/controller/DemandeVolController.java
 /Users/user/Desktop/travel-agency/backend/src/main/java/com/travelagency/service/VoyageService.java
 /Users/user/Desktop/travel-agency/backend/src/main/java/com/travelagency/dto/ClientDTO.java
 /Users/user/Desktop/travel-agency/backend/src/main/java/com/travelagency/repository/ReservationRepository.java
@@ -23,6 +27,7 @@
 /Users/user/Desktop/travel-agency/backend/src/main/java/com/travelagency/service/AssureService.java
 /Users/user/Desktop/travel-agency/backend/src/main/java/com/travelagency/controller/AdminController.java
 /Users/user/Desktop/travel-agency/backend/src/main/java/com/travelagency/entity/Vol.java
+/Users/user/Desktop/travel-agency/backend/src/main/java/com/travelagency/service/DemandeVolEmailService.java
 /Users/user/Desktop/travel-agency/backend/src/main/java/com/travelagency/dto/PaiementRequest.java
 /Users/user/Desktop/travel-agency/backend/src/main/java/com/travelagency/dto/AssureDTOs.java
 /Users/user/Desktop/travel-agency/backend/src/main/java/com/travelagency/dto/VoyageResponse.java
@@ -31,6 +36,7 @@
 /Users/user/Desktop/travel-agency/backend/src/main/java/com/travelagency/service/ClientImportService.java
 /Users/user/Desktop/travel-agency/backend/src/main/java/com/travelagency/entity/Reservation.java
 /Users/user/Desktop/travel-agency/backend/src/main/java/com/travelagency/dto/AuthDTOs.java
+/Users/user/Desktop/travel-agency/backend/src/main/java/com/travelagency/dto/DemandeVolDTOs.java
 /Users/user/Desktop/travel-agency/backend/src/main/java/com/travelagency/dto/VoyageDTOs.java
 /Users/user/Desktop/travel-agency/backend/src/main/java/com/travelagency/config/SecurityConfig.java
 /Users/user/Desktop/travel-agency/backend/src/main/java/com/travelagency/service/AssureEmailService.java
@@ -48,6 +54,7 @@
 /Users/user/Desktop/travel-agency/backend/src/main/java/com/travelagency/dto/AuthResponse.java
 /Users/user/Desktop/travel-agency/backend/src/main/java/com/travelagency/security/JwtService.java
 /Users/user/Desktop/travel-agency/backend/src/main/java/com/travelagency/dto/ReservationRequest.java
+/Users/user/Desktop/travel-agency/backend/src/main/java/com/travelagency/repository/DemandeVolRepository.java
 /Users/user/Desktop/travel-agency/backend/src/main/java/com/travelagency/service/AuthService.java
 /Users/user/Desktop/travel-agency/backend/src/main/java/com/travelagency/dto/ReservationDTOs.java
 /Users/user/Desktop/travel-agency/backend/src/main/java/com/travelagency/dto/ReservationResponse.java
