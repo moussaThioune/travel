@@ -34,9 +34,15 @@ public class AuthService {
 
     @Transactional
     public AuthDTOs.RegisterResponse register(AuthDTOs.RegisterRequest request) {
-        if (userRepository.existsByEmail(request.email)) {
-            throw new RuntimeException("Email déjà utilisé: " + request.email);
-        }
+        userRepository.findByEmail(request.email).ifPresent(existing -> {
+            if (existing.isEnabled()) {
+                throw new RuntimeException("Un compte actif existe déjà avec cet email. Connectez-vous directement.");
+            }
+            // Compte non vérifié : on supprime l'ancien pour permettre la ré-inscription
+            clientRepository.findByEmail(request.email).ifPresent(clientRepository::delete);
+            userRepository.delete(existing);
+            userRepository.flush();
+        });
 
         String verificationToken = UUID.randomUUID().toString();
 
