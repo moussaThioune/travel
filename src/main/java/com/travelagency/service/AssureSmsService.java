@@ -41,6 +41,33 @@ public class AssureSmsService {
     }
 
     @Async
+    public void sendTestSms(String telephone, String messagePerso) {
+        String tel = normaliserTel(telephone);
+        if (tel == null) {
+            log.error("SMS TEST: numéro invalide — {}", telephone);
+            return;
+        }
+        String msg = (messagePerso != null && !messagePerso.isBlank())
+            ? messagePerso
+            : "✅ Test SMS Twilio — Yatou Voyage fonctionne ! (" + nomAgence + ")";
+
+        if (smsEnabled) {
+            try {
+                Message message = Message.creator(
+                    new PhoneNumber(tel),
+                    new PhoneNumber(fromNumber),
+                    msg
+                ).create();
+                log.info("SMS TEST envoyé à {} — SID: {}", tel, message.getSid());
+            } catch (Exception e) {
+                log.error("SMS TEST ECHEC pour {} — {}: {}", tel, e.getClass().getSimpleName(), e.getMessage());
+            }
+        } else {
+            log.info("📱 [SMS TEST SIMULATION] → {} :\n{}", tel, msg);
+        }
+    }
+
+    @Async
     public void sendRappel(Assure a, String messagePerso) {
         String tel = normaliserTel(a.getTelephone());
         if (tel == null) {

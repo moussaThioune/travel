@@ -2,6 +2,7 @@ package com.travelagency.controller;
 
 import com.travelagency.dto.AssureDTOs;
 import com.travelagency.service.AssureService;
+import com.travelagency.service.AssureSmsService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +18,7 @@ import java.util.Map;
 public class AssureController {
 
     private final AssureService service;
+    private final AssureSmsService smsService;
 
     // ===== CRUD =====
     @GetMapping
@@ -82,5 +84,19 @@ public class AssureController {
     public ResponseEntity<Map<String, String>> lancerRappels() {
         service.envoyerRappelsMensuelsTous();
         return ResponseEntity.ok(Map.of("message", "Rappels lancés avec succès"));
+    }
+
+    // ===== TEST SMS =====
+    @PostMapping("/test-sms")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<Map<String, String>> testSms(
+            @RequestParam String telephone,
+            @RequestParam(required = false) String message) {
+        smsService.sendTestSms(telephone, message);
+        return ResponseEntity.ok(Map.of(
+            "status", "SMS envoyé (vérifiez les logs Railway)",
+            "telephone", telephone,
+            "message", message != null ? message : "Message de test Twilio — Yatou Voyage"
+        ));
     }
 }
