@@ -35,7 +35,9 @@ public class EmailService {
             sendHtml(user.getEmail(),
                 "✅ Activez votre compte Yatou Voyage",
                 emailVerification(user, verificationLink));
-        } catch (Exception e) { log.error("Email vérification: {}", e.getMessage()); }
+        } catch (Exception e) {
+            log.error("Email vérification ECHEC pour {}: {} — {}", user.getEmail(), e.getClass().getSimpleName(), e.getMessage());
+        }
     }
 
     @Async
