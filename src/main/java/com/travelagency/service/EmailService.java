@@ -3,102 +3,102 @@ package com.travelagency.service;
 import com.travelagency.entity.Paiement;
 import com.travelagency.entity.Reservation;
 import com.travelagency.entity.User;
-import jakarta.mail.MessagingException;
-import jakarta.mail.internet.MimeMessage;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.http.*;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
-import java.io.UnsupportedEncodingException;
 import java.time.format.DateTimeFormatter;
+import java.util.Map;
 
 @Service
-@RequiredArgsConstructor
 @Slf4j
 public class EmailService {
 
-    private final JavaMailSender mailSender;
-
-    @Value("${app.mail.from}") private String fromEmail;
-    @Value("${app.mail.from-name}") private String fromName;
-
+    private static final String BREVO_API = "https://api.brevo.com/v3/smtp/email";
     private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("dd/MM/yyyy");
     private static final DateTimeFormatter DT_FORMAT  = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
+    @Value("${app.brevo.api-key}") private String apiKey;
+    @Value("${app.mail.from}") private String fromEmail;
+    @Value("${app.mail.from-name}") private String fromName;
+
+    private final RestTemplate rest = new RestTemplate();
+
     @Async
     public void sendEmailVerification(User user, String verificationLink) {
-        try {
-            sendHtml(user.getEmail(),
-                "✅ Activez votre compte Yatou Voyage",
-                emailVerification(user, verificationLink));
-        } catch (Exception e) {
-            log.error("Email vérification ECHEC pour {}: {} — {}", user.getEmail(), e.getClass().getSimpleName(), e.getMessage());
-        }
+        send(user.getEmail(), user.getFirstName(),
+            "✅ Activez votre compte Yatou Voyage",
+            emailVerification(user, verificationLink));
     }
 
     @Async
     public void sendReservationConfirmation(Reservation r) {
-        try {
-            sendHtml(r.getClient().getEmail(),
-                "✈️ Confirmation réservation #" + r.getNumeroReservation(),
-                emailReservation(r));
-        } catch (Exception e) { log.error("Email confirmation: {}", e.getMessage()); }
+        send(r.getClient().getEmail(), r.getClient().getFullName(),
+            "✈️ Confirmation réservation #" + r.getNumeroReservation(),
+            emailReservation(r));
     }
 
     @Async
     public void sendPaiementConfirmation(Paiement p) {
-        try {
-            sendHtml(p.getReservation().getClient().getEmail(),
-                "💳 Paiement confirmé - #" + p.getNumeroPaiement(),
-                emailPaiement(p));
-        } catch (Exception e) { log.error("Email paiement: {}", e.getMessage()); }
+        send(p.getReservation().getClient().getEmail(), p.getReservation().getClient().getFullName(),
+            "💳 Paiement confirmé - #" + p.getNumeroPaiement(),
+            emailPaiement(p));
     }
 
     @Async
     public void sendMobileMoneyPending(Paiement p) {
-        try {
-            String provider = switch (p.getModePaiement()) {
-                case ORANGE_MONEY -> "🟠 Orange Money";
-                case WAVE -> "🔵 Wave";
-                case FREE_MONEY -> "🟢 Free Money";
-                default -> "Mobile Money";
-            };
-            sendHtml(p.getReservation().getClient().getEmail(),
-                "📱 Paiement " + provider + " en cours de validation",
-                emailMobileMoneyPending(p, provider));
-        } catch (Exception e) { log.error("Email mobile money pending: {}", e.getMessage()); }
+        String provider = switch (p.getModePaiement()) {
+            case ORANGE_MONEY -> "🟠 Orange Money";
+            case WAVE -> "🔵 Wave";
+            case FREE_MONEY -> "🟢 Free Money";
+            default -> "Mobile Money";
+        };
+        send(p.getReservation().getClient().getEmail(), p.getReservation().getClient().getFullName(),
+            "📱 Paiement " + provider + " en cours de validation",
+            emailMobileMoneyPending(p, provider));
     }
 
     @Async
     public void sendPaiementRejete(Paiement p, String reason) {
-        try {
-            sendHtml(p.getReservation().getClient().getEmail(),
-                "❌ Paiement rejeté - " + p.getNumeroPaiement(),
-                emailRejete(p, reason));
-        } catch (Exception e) { log.error("Email rejet: {}", e.getMessage()); }
+        send(p.getReservation().getClient().getEmail(), p.getReservation().getClient().getFullName(),
+            "❌ Paiement rejeté - " + p.getNumeroPaiement(),
+            emailRejete(p, reason));
     }
 
     @Async
     public void sendReservationCancellation(Reservation r) {
-        try {
-            sendHtml(r.getClient().getEmail(),
-                "❌ Annulation réservation #" + r.getNumeroReservation(),
-                emailAnnulation(r));
-        } catch (Exception e) { log.error("Email annulation: {}", e.getMessage()); }
+        send(r.getClient().getEmail(), r.getClient().getFullName(),
+            "❌ Annulation réservation #" + r.getNumeroReservation(),
+            emailAnnulation(r));
     }
 
-    private void sendHtml(String to, String subject, String html) throws MessagingException, UnsupportedEncodingException {
-        MimeMessage msg = mailSender.createMimeMessage();
-        MimeMessageHelper h = new MimeMessageHelper(msg, true, "UTF-8");
-        h.setFrom(fromEmail, fromName);
-        h.setTo(to); h.setSubject(subject);
-        h.setText(html, true);
-        mailSender.send(msg);
-        log.info("Email envoyé à {}: {}", to, subject);
+    private void send(String toEmail, String toName, String subject, String html) {
+        try {
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+            headers.set("api-key", apiKey);
+
+            Map<String, Object> body = Map.of(
+                "sender",  Map.of("name", fromName, "email", fromEmail),
+                "to",      java.util.List.of(Map.of("email", toEmail, "name", toName)),
+                "subject", subject,
+                "htmlContent", html
+            );
+
+            ResponseEntity<String> response = rest.postForEntity(
+                BREVO_API, new HttpEntity<>(body, headers), String.class);
+
+            if (response.getStatusCode().is2xxSuccessful()) {
+                log.info("Email envoyé via Brevo à {}: {}", toEmail, subject);
+            } else {
+                log.error("Brevo erreur {} pour {}: {}", response.getStatusCode(), toEmail, response.getBody());
+            }
+        } catch (Exception e) {
+            log.error("Email ECHEC pour {}: {} — {}", toEmail, e.getClass().getSimpleName(), e.getMessage());
+        }
     }
 
     // ===== TEMPLATES =====
@@ -123,6 +123,21 @@ public class EmailService {
         """.formatted(color, color, color, title, body);
     }
 
+    private String emailVerification(User user, String link) {
+        String body = """
+        <p>Bonjour <strong>%s</strong>,</p>
+        <p>Merci de vous être inscrit sur <strong>Yatou Voyage</strong>. Il ne reste qu'une étape pour activer votre compte.</p>
+        <div style="text-align:center;margin:32px 0">
+          <a href="%s" style="background:linear-gradient(135deg,#1a6b6b,#0d4040);color:white;text-decoration:none;padding:16px 36px;border-radius:30px;font-size:16px;font-weight:700;display:inline-block;letter-spacing:0.5px">
+            ✅ Activer mon compte
+          </a>
+        </div>
+        <p style="color:#888;font-size:13px;text-align:center">Ce lien est valable 24 heures. Si vous n'êtes pas à l'origine de cette inscription, ignorez cet email.</p>
+        <p style="color:#aaa;font-size:12px;text-align:center;word-break:break-all">Lien: %s</p>
+        """.formatted(user.getFirstName(), link, link);
+        return wrap("linear-gradient(135deg,#1a6b6b,#0d4040)", "✈️ Activez votre compte Yatou Voyage", body);
+    }
+
     private String emailReservation(Reservation r) {
         String body = """
         <p>Bonjour <strong>%s</strong>,</p>
@@ -135,7 +150,7 @@ public class EmailService {
             <div class="row"><span class="lbl">Retour</span><span class="val">%s</span></div>
             <div class="row"><span class="lbl">Personnes</span><span class="val">%d</span></div>
         </div>
-        <div class="amt">%s €</div>
+        <div class="amt">%s CFA</div>
         <p style="color:#888;font-size:14px;text-align:center">Vous pouvez payer par Orange Money, Wave, Free Money ou carte bancaire.</p>
         """.formatted(
             r.getClient().getFullName(), r.getNumeroReservation(),
@@ -167,15 +182,14 @@ public class EmailService {
             <div class="row"><span class="lbl">Réservation</span><span class="val">%s</span></div>
             <div class="row"><span class="lbl">Mode</span><span class="val">%s</span></div>
             <div class="row"><span class="lbl">Date</span><span class="val">%s</span></div>
-            <div class="row"><span class="lbl">Total payé</span><span class="val">%s €</span></div>
-            <div class="row"><span class="lbl">Reste à payer</span><span class="val">%s €</span></div>
+            <div class="row"><span class="lbl">Total payé</span><span class="val">%s CFA</span></div>
+            <div class="row"><span class="lbl">Reste à payer</span><span class="val">%s CFA</span></div>
         </div>
         """.formatted(
             r.getClient().getFullName(),
-            p.getMontant(), p.isMobileMoney() ? "FCFA" : "€",
+            p.getMontant(), p.isMobileMoney() ? "FCFA" : "CFA",
             p.getNumeroPaiement(), r.getNumeroReservation(),
-            modeLabel,
-            p.getDatePaiement().format(DT_FORMAT),
+            modeLabel, p.getDatePaiement().format(DT_FORMAT),
             r.getMontantPaye(), r.getMontantRestant()
         );
         return wrap("linear-gradient(135deg,#16a34a,#14532d)", "💳 Paiement Confirmé!", body);
@@ -221,21 +235,6 @@ public class EmailService {
             p.getMontant(), reason != null ? reason : "Paiement non reçu"
         );
         return wrap("linear-gradient(135deg,#dc2626,#7f1d1d)", "❌ Paiement Rejeté", body);
-    }
-
-    private String emailVerification(User user, String link) {
-        String body = """
-        <p>Bonjour <strong>%s</strong>,</p>
-        <p>Merci de vous être inscrit sur <strong>Yatou Voyage</strong>. Il ne reste qu'une étape pour activer votre compte.</p>
-        <div style="text-align:center;margin:32px 0">
-          <a href="%s" style="background:linear-gradient(135deg,#1a6b6b,#0d4040);color:white;text-decoration:none;padding:16px 36px;border-radius:30px;font-size:16px;font-weight:700;display:inline-block;letter-spacing:0.5px">
-            ✅ Activer mon compte
-          </a>
-        </div>
-        <p style="color:#888;font-size:13px;text-align:center">Ce lien est valable 24 heures. Si vous n'êtes pas à l'origine de cette inscription, ignorez cet email.</p>
-        <p style="color:#aaa;font-size:12px;text-align:center;word-break:break-all">Lien: %s</p>
-        """.formatted(user.getFirstName(), link, link);
-        return wrap("linear-gradient(135deg,#1a6b6b,#0d4040)", "✈️ Activez votre compte Yatou Voyage", body);
     }
 
     private String emailAnnulation(Reservation r) {
