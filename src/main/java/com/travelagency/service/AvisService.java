@@ -14,8 +14,6 @@ import java.util.Map;
 public class AvisService {
 
     private static final long BASE_TRAVELERS = 12_000L;
-    private static final double BASE_RATING_SUM = 9_800 * 4.9;
-    private static final long BASE_RATING_COUNT = 9_800L;
 
     private final AvisRepository avisRepository;
 
@@ -35,15 +33,13 @@ public class AvisService {
         long count = avisRepository.count();
         Double avg = avisRepository.averageNote();
 
-        double totalSum = BASE_RATING_SUM + (avg != null ? avg * count : 0);
-        long totalCount = BASE_RATING_COUNT + count;
-        double moyennefinale = totalCount > 0
-                ? Math.round((totalSum / totalCount) * 10.0) / 10.0
-                : 4.9;
+        double moyenneFinale = (avg != null && count > 0)
+                ? Math.round(avg * 10.0) / 10.0
+                : 0.0;
 
         return Map.of(
                 "totalTravelers", BASE_TRAVELERS + count,
-                "averageRating", moyennefinale,
+                "averageRating", moyenneFinale,
                 "totalAvis", count
         );
     }

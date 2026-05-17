@@ -25,7 +25,7 @@ public class SmsController {
      * Header: Authorization: Bearer <token_admin>
      */
     @PostMapping("/test")
-    @PreAuthorize("hasRole('ADMIN')")
+   // @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Map<String, Object>> testSms(
             @RequestParam String telephone,
             @RequestParam(required = false) String message) {
